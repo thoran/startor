@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+# startor
+
+# 20161227
+# 0.0.0
+
+# History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
+
+# Notes:
+# 1. The hardware ports can be any of: 'Thunderbolt Ethernet', 'Thunderbolt Bridge', 'Wi-Fi', 'Ethernet', 'Bluetooth PAN', or 'Display Ethernet'.
+# 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
+
+require 'FileUtils/which'
+require 'IfConfig'
+require 'OSX/HardwarePort'
+
+def check_for_tor_program
+  unless FileUtils.which('tor')
+    puts 'tor was not found.  Install tor first.'
+    exit
+  end
+end
+
+def enter_admin_password
+  system('sudo -v')
+end
+
+def active_network_interfaces
+  IfConfig.new.active_interfaces
+end
+
+def active_network_ports
+  active_network_interfaces.collect do |active_network_interface|
+    hardware_port = OSX::HardwarePort.find_by_device(active_network_interface)
+    hardware_port.hardware_port
+  end
+end
+
+def setup_interfaces
+  active_network_ports.each do |active_network_port|
+    puts("sudo networksetup -setsocksfirewallproxy '#{active_network_port}' 127.0.0.1 9050 off")
+    system("sudo networksetup -setsocksfirewallproxy '#{active_network_port}' 127.0.0.1 9050 off")
+  end
+end
+
+def enable_proxy
+  active_network_ports.each do |active_network_port|
+    puts("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' on")  
+    system("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' on")  
+    system('echo "$(tput setaf 64)"') # green
+    system('echo "SOCKS proxy 127.0.0.1:9050 enabled."')
+    system('echo "$(tput setaf 136)"') # orange
+    system('echo "Starting Tor..."')
+    system('echo "$(tput sgr0)"') # color reset
+  end
+end
+
+def start_tor
+  system('tor')
+end
+
+def disable_proxy
+  active_network_ports.each do |active_network_port|
+    puts("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' off")
+    system("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' off")
+    system('echo "$(tput setaf 64)"') # green
+    system('echo "SOCKS proxy disabled."')
+    system('echo "$(tput sgr0)"') # color reset
+  end
+end
+
+def main
+  check_for_tor_program
+  enter_admin_password
+  setup_interfaces
+  enable_proxy
+  start_tor
+rescue SystemExit, Interrupt
+  disable_proxy
+end
+
+main
