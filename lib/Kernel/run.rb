@@ -1,8 +1,8 @@
 # Kernel/run.rb
 # Kernel#run
 
-# 20141002
-# 0.1.4
+# 20170613
+# 0.1.5
 
 # Changes:
 # 1. Make use of a number of options, substituting ENV['DRY_RUN'] for options[:dry_run], and adding :show and :dont_raise.
@@ -14,6 +14,8 @@
 # 4. The logic was reversed for whether to raise or not.
 # 3/4
 # 5. Really fixed the raise logic finally, I think.
+# 4/5
+# 6. Yet another attempt at fixing the raise logic.
 
 # Todo:
 # 1. Even though this is a small method it might be good idea to add some automated tests.
@@ -32,7 +34,7 @@ module Kernel
     end
     unless options[:dry_run]
       system(*command)
-      unless $?.success? && !options[:dont_raise]
+      if !$?.success? && !options[:dont_raise]
         raise "#{command.inspect} failed to exit cleanly."
       end
     end
