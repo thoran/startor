@@ -2,7 +2,7 @@
 # startor
 
 # 20181028
-# 0.4.0
+# 0.5.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -11,8 +11,8 @@
 # 2. Ruby is installed, which it should be already!
 
 # Suggested method for installation of prerequisites:
-# 1. Install brew: `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`.
-# 2. Install tor with brew: `brew install tor`.
+# 1. Install Homebrew: `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`.
+# 2. Install tor with Homebrew: `brew install tor`.
 
 # How to use:
 # 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
@@ -24,23 +24,43 @@
 # 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
 
 # Changes:
-# Decided that I wanted to have the functionality of both 0.2.0 which startor remains running and 0.3.0 which passes control from startor to tor.
-# 1. ~ main(), so that it will call either explicit_up() or implicit_up().
-# 2. + explicit_up(), which is called when the subcommand 'up' is used.
-# 3. + implicit_up(), which is called when no subcommand is supplied.
-# 4. ~ up(), so that it does all the preparatory work it previously did, except start tor itself.
-# 5. /start_tor()/system_tor()/, which keeps startor running.
-# 6. + exec_tor(), which passess control from startor to tor.
-# 7. Added some instructions on how to use.
+# An attempt to make this easy to use.
+# 1. ~ main(), so that it has an additional subcommand: "setup" and so that it doesn't run the down method if tor is found to not be installed.
+# 2. + install_homebrew()
+# 3. + install_tor()
+# 4. + setup()
+# 5. ~ check_for_tor_program(), so that it outputs additional instructions on how to install tor via the setup subcommand.
 
 require 'FileUtils/which'
 require 'Kernel/run'
 require 'OSX/HardwarePort'
 require 'OSX/IfConfig'
 
+def install_homebrew
+  if FileUtils.which('brew')
+    puts 'Homebrew is already installed!'
+  else
+    run('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', show: true)
+  end
+end
+
+def install_tor
+  if FileUtils.which('brew')
+    puts 'tor is already installed!'
+  else
+    run('brew install tor', show: true)
+  end
+end
+
+def setup
+  install_homebrew
+  install_tor
+end
+
 def check_for_tor_program
   unless FileUtils.which('tor')
-    puts 'tor was not found.  Install tor first.'
+    puts "tor was not found.  You must install tor first."
+    puts "The easist way to install it is by running `startor setup`."
     exit
   end
 end
@@ -129,10 +149,11 @@ def main
   case ARGV[0]
   when 'up'; explicit_up
   when 'down'; down
+  when 'setup'; setup
   else; implicit_up
   end
 rescue SystemExit, Interrupt
-  down
+  down if FileUtils.which('tor')
 end
 
 main
