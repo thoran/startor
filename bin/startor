@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20170911
-# 0.2.0
+# 20181028
+# 0.3.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -10,9 +10,16 @@
 # 1. The hardware ports can be any of: 'Thunderbolt Ethernet', 'Thunderbolt Bridge', 'Wi-Fi', 'Ethernet', 'Bluetooth PAN', or 'Display Ethernet'.
 # 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
 
+# Changes:
+# 1. /require 'IfConfig'/require 'OSX/IfConfig'/
+# 2. ~ startor() so that it uses system again, since an interrupt won't be trapped and the proxy won't be brought down.
+# 3. ~ main() so that it calls down() instead of going directly to disable_proxy(), since I may want to do more when bringing tor down.
+# 4. + green() so that this is easier to read.
+# 5. + orange() so that this is easier to read.
+
 require 'FileUtils/which'
-require 'IfConfig'
 require 'Kernel/run'
+require 'OSX/IfConfig'
 require 'OSX/HardwarePort'
 
 def check_for_tor_program
@@ -27,7 +34,7 @@ def enter_admin_password
 end
 
 def active_network_interfaces
-  IfConfig.new.active_interfaces
+  OSX::IfConfig.new.active_interfaces
 end
 
 def active_network_ports
@@ -44,27 +51,34 @@ def setup_interfaces
   end
 end
 
+def green(string)
+  system('echo "$(tput setaf 64)"') # set shell output colour green(ish)
+  puts string
+  system('echo "$(tput sgr0)"') # color reset
+end
+
+def orange(string)
+  system('echo "$(tput setaf 136)"') # set shell output colour to orange
+  puts string
+  system('echo "$(tput sgr0)"') # color reset
+end
+
 def enable_proxy
   active_network_ports.each do |active_network_port|
     run("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' on", show: true)
-    system('echo "$(tput setaf 64)"') # green
-    system('echo "SOCKS proxy 127.0.0.1:9050 enabled."')
-    system('echo "$(tput setaf 136)"') # orange
-    system('echo "Starting Tor..."')
-    system('echo "$(tput sgr0)"') # color reset
+    green('SOCKS proxy 127.0.0.1:9050 enabled.')
+    orange('Starting Tor...')
   end
 end
 
 def start_tor
-  exec('tor')
+  system('tor')
 end
 
 def disable_proxy
   active_network_ports.each do |active_network_port|
     run("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' off", show: true)
-    system('echo "$(tput setaf 64)"') # green
-    system('echo "SOCKS proxy disabled."')
-    system('echo "$(tput sgr0)"') # color reset
+    green('SOCKS proxy disabled.')
   end
 end
 
@@ -87,7 +101,7 @@ def main
   else; up
   end
 rescue SystemExit, Interrupt
-  disable_proxy
+  down
 end
 
 main

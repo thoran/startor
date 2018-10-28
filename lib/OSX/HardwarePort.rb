@@ -1,10 +1,10 @@
 # OSX/Hardware.rb
 # OSX::Hardware
 
-# 20161227
-# 0.1.0
+# 20180209
+# 0.1.1
 
-require 'String/captures'
+require 'Thoran/String/Captures/captures'
 
 module OSX
   class HardwarePort
