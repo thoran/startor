@@ -2,7 +2,7 @@
 # startor
 
 # 20181028
-# 0.3.1
+# 0.4.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -14,21 +14,24 @@
 # 1. Install brew: `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`.
 # 2. Install tor with brew: `brew install tor`.
 
+# How to use:
+# 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
+# 2. Type: "Terminal.app" and press the <return> key.
+# 3. Type: "startor" and press the <return> key.
+
 # Notes:
 # 1. The hardware ports can be any of: 'Thunderbolt Ethernet', 'Thunderbolt Bridge', 'Wi-Fi', 'Ethernet', 'Bluetooth PAN', or 'Display Ethernet'.
 # 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
 
 # Changes:
-# 1. /require 'IfConfig'/require 'OSX/IfConfig'/
-# 2. ~ startor() so that it uses system again, since an interrupt won't be trapped and the proxy won't be brought down.
-# 3. ~ main() so that it calls down() instead of going directly to disable_proxy(), since I may want to do more when bringing tor down.
-# 4. + green() so that this is easier to read.
-# 5. + orange() so that this is easier to read.
-# 0/1
-# 6. + puts_with_colour().
-# 7. /green()/puts_green()/ and call puts_with_colour().
-# 8. /orange()/puts_orange()/ and call puts_with_colour().
-# 9. Added some installation instructions.
+# Decided that I wanted to have the functionality of both 0.2.0 which startor remains running and 0.3.0 which passes control from startor to tor.
+# 1. ~ main(), so that it will call either explicit_up() or implicit_up().
+# 2. + explicit_up(), which is called when the subcommand 'up' is used.
+# 3. + implicit_up(), which is called when no subcommand is supplied.
+# 4. ~ up(), so that it does all the preparatory work it previously did, except start tor itself.
+# 5. /start_tor()/system_tor()/, which keeps startor running.
+# 6. + exec_tor(), which passess control from startor to tor.
+# 7. Added some instructions on how to use.
 
 require 'FileUtils/which'
 require 'Kernel/run'
@@ -86,8 +89,12 @@ def enable_proxy
   end
 end
 
-def start_tor
+def system_tor
   system('tor')
+end
+
+def exec_tor
+  exec('tor')
 end
 
 def disable_proxy
@@ -97,12 +104,21 @@ def disable_proxy
   end
 end
 
-def up
+def common_up
   check_for_tor_program
   enter_admin_password
   setup_interfaces
   enable_proxy
-  start_tor
+end
+
+def explicit_up
+  common_up
+  exec_tor
+end
+
+def implicit_up
+  common_up
+  system_tor
 end
 
 def down
@@ -111,9 +127,9 @@ end
 
 def main
   case ARGV[0]
-  when 'up'; up
+  when 'up'; explicit_up
   when 'down'; down
-  else; up
+  else; implicit_up
   end
 rescue SystemExit, Interrupt
   down
