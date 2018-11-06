@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20161227
-# 0.0.0
+# 20161228
+# 0.1.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -12,6 +12,7 @@
 
 require 'FileUtils/which'
 require 'IfConfig'
+require 'Kernel/run'
 require 'OSX/HardwarePort'
 
 def check_for_tor_program
@@ -31,22 +32,21 @@ end
 
 def active_network_ports
   active_network_interfaces.collect do |active_network_interface|
-    hardware_port = OSX::HardwarePort.find_by_device(active_network_interface)
-    hardware_port.hardware_port
-  end
+    if hardware_port = OSX::HardwarePort.find_by_device(active_network_interface)
+      hardware_port.name
+    end
+  end.compact
 end
 
 def setup_interfaces
   active_network_ports.each do |active_network_port|
-    puts("sudo networksetup -setsocksfirewallproxy '#{active_network_port}' 127.0.0.1 9050 off")
-    system("sudo networksetup -setsocksfirewallproxy '#{active_network_port}' 127.0.0.1 9050 off")
+    run("sudo networksetup -setsocksfirewallproxy '#{active_network_port}' 127.0.0.1 9050 off", show: true)
   end
 end
 
 def enable_proxy
   active_network_ports.each do |active_network_port|
-    puts("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' on")  
-    system("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' on")  
+    run("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' on", show: true)
     system('echo "$(tput setaf 64)"') # green
     system('echo "SOCKS proxy 127.0.0.1:9050 enabled."')
     system('echo "$(tput setaf 136)"') # orange
@@ -56,13 +56,12 @@ def enable_proxy
 end
 
 def start_tor
-  system('tor')
+  run('tor', show: true)
 end
 
 def disable_proxy
   active_network_ports.each do |active_network_port|
-    puts("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' off")
-    system("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' off")
+    run("sudo networksetup -setsocksfirewallproxystate '#{active_network_port}' off", show: true)
     system('echo "$(tput setaf 64)"') # green
     system('echo "SOCKS proxy disabled."')
     system('echo "$(tput sgr0)"') # color reset
