@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20181029
-# 0.5.1
+# 20181101
+# 0.5.2
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -10,18 +10,25 @@
 # 1. tor binary is installed.
 # 2. Ruby is installed, which it should be already!
 
-# Suggested method for installation of prerequisites:
-# 1. Install Homebrew: `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`.
-# 2. Install tor with Homebrew: `brew install tor`.
-
 # How to use:
 # 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
 # 2. Type: "Terminal.app" and press the <return> key.
-# 3. Type: "startor" and press the <return> key.
+# 3. Type: "startor setup" and press the <return> key.
+# 4. Type: "startor" and press the <return> key.
+# 5. If prompted, enter the password you use to login to your computer.
+# 6. When wanting stop tor, go to the same window as the commands immediately above were entered and press the <ctrl> and <c> keys on the keyboard simultaneously.
+# 7. If prompted, enter the password you use to login to your computer.
 
 # Notes:
 # 1. The hardware ports can be any of: 'Thunderbolt Ethernet', 'Thunderbolt Bridge', 'Wi-Fi', 'Ethernet', 'Bluetooth PAN', or 'Display Ethernet'.
 # 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
+
+# Todo: (one or more of the following, in no particular order)
+# 1. Turn this into a gem.
+# 2. Turn this into a brew formula.
+# 3. Remove some of the comments here and put those into a README.
+# 4. Create a(n) .app out of this by using some simple wrapper code.
+# 5. Make it cross-platform: OSX, Linux, and Windows.
 
 # Changes:
 # An attempt to make this easy to use.
@@ -34,6 +41,10 @@
 # 6. + tor_installed?()
 # 7. ~ check_for_tor_program() to make use of tor_installed?().
 # 8. ~ main() to make use of tor_installed?().
+# 1/2
+# 9. ~ install_tor(), so that it actually checks for the presence of tor and not copy-pasta brew!
+# 10. Removed the section of comments entitled "Suggested method for installation of prerequisites", since that is captured within setup() and friends.
+# 11. Added to the section of comments entitled "How to use", to include needing to enter one's password, use of `startor setup`, and <ctrl> and <c> for quitting tor.
 
 require 'FileUtils/which'
 require 'Kernel/run'
@@ -49,7 +60,7 @@ def install_homebrew
 end
 
 def install_tor
-  if FileUtils.which('brew')
+  if FileUtils.which('tor')
     puts 'tor is already installed!'
   else
     run('brew install tor', show: true)
