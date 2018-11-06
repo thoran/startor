@@ -2,7 +2,7 @@
 # startor
 
 # 20181107
-# 0.6.1
+# 0.6.2
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -48,6 +48,12 @@
 # 7. Updated lib/Version.rb, so that: /require 'String/capture'/require 'Thoran/String/Capture/capture'/, which I should have done as of startor 0.3.0 when gathering the libraries, since that post-dates the change to Version.rb.
 # 8. - lib/String/capture.rb
 # 9. ~ .gitignore: + *.gem, so that gem builds don't go in the repo without me having to remove them manually when I do `git add .`.
+# 2/3
+# Don't install homebrew or tor needlessly if issuing `startor setup`...
+# 10. + homebrew_installed?()
+# 11. ~ install_homebrew() to make use of homebrew_installed?().
+# 12. ~ install_tor() to make use of tor_installed?(), though this is a bit redundant, since setup() should control whether install_tor() is run anyway.
+# 13. ~ setup(), so that it doesn't needlessly install brew, because tor is already installed.
 
 require 'FileUtils/which'
 require 'Kernel/run'
@@ -55,7 +61,7 @@ require 'OSX/HardwarePort'
 require 'OSX/IfConfig'
 
 def install_homebrew
-  if FileUtils.which('brew')
+  if homebrew_installed?
     puts 'Homebrew is already installed!'
   else
     run('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', show: true)
@@ -63,7 +69,7 @@ def install_homebrew
 end
 
 def install_tor
-  if FileUtils.which('tor')
+  if tor_installed?
     puts 'tor is already installed!'
   else
     run('brew install tor', show: true)
@@ -71,12 +77,18 @@ def install_tor
 end
 
 def setup
-  install_homebrew
-  install_tor
+  unless tor_installed?
+    install_homebrew
+    install_tor
+  end
 end
 
 def tor_installed?
   FileUtils.which('tor')
+end
+
+def homebrew_installed?
+  FileUtils.which('brew')
 end
 
 def check_for_tor_program
