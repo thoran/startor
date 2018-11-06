@@ -1,21 +1,23 @@
 # Version.rb
 # Version
 
-# 20140910
-# 0.13.0
+# 20180209
+# 0.13.1
 
 # Description: This class is able to compare strings containing version numbers.
 
 # Changes since 0.12:
 # 1. Version.each now returns Version instances.
 # 2. Version.sorted now returns a collection with either strings or Version instances, depending on what was supplied.
+# 0/1
+# 3. - require 'String/capture' && + require 'Thoran/String/Capture/capture'
 
 lib_dir = File.dirname(File.expand_path(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
 require 'Module/alias_methods'
 require 'Ordinal/Array'
-require 'String/capture'
+require 'Thoran/String/Capture/capture'
 
 class Version
 
