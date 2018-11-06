@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20181106
-# 0.6.0
+# 20181107
+# 0.6.1
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -40,6 +40,14 @@
 # Gemification and further tidying...
 # 1. + startor.gemspec
 # 2. Added to the section of comments entitled "Installation", which includes making use of the startor gem.
+# 0/1
+# 3. + lib/String/grep.rb, which had been left out after attempting to gather together all the requisite libraries for each version of startor prior to putting into a git repo and publishing yesterday.  I am needing to just create a repo from dot, have tests in place, and/or a sandbox to ensure that libraries I already have installed don't mislead me into thinking that I have all the dependencies intalled.
+# 4. + lib/String/each.rb, which is a dependency of String#grep's.
+# 5. + lib/String/each_char.rb, which is a dependency of String#each's.
+# 6. + lib/String/each_line.rb, which is a dependency of String#each's.
+# 7. Updated lib/Version.rb, so that: /require 'String/capture'/require 'Thoran/String/Capture/capture'/, which I should have done as of startor 0.3.0 when gathering the libraries, since that post-dates the change to Version.rb.
+# 8. - lib/String/capture.rb
+# 9. ~ .gitignore: + *.gem, so that gem builds don't go in the repo without me having to remove them manually when I do `git add .`.
 
 require 'FileUtils/which'
 require 'Kernel/run'
