@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20181028
-# 0.5.0
+# 20181029
+# 0.5.1
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -30,6 +30,10 @@
 # 3. + install_tor()
 # 4. + setup()
 # 5. ~ check_for_tor_program(), so that it outputs additional instructions on how to install tor via the setup subcommand.
+# 0/1
+# 6. + tor_installed?()
+# 7. ~ check_for_tor_program() to make use of tor_installed?().
+# 8. ~ main() to make use of tor_installed?().
 
 require 'FileUtils/which'
 require 'Kernel/run'
@@ -57,8 +61,12 @@ def setup
   install_tor
 end
 
+def tor_installed?
+  FileUtils.which('tor')
+end
+
 def check_for_tor_program
-  unless FileUtils.which('tor')
+  unless tor_installed?
     puts "tor was not found.  You must install tor first."
     puts "The easist way to install it is by running `startor setup`."
     exit
@@ -153,7 +161,7 @@ def main
   else; implicit_up
   end
 rescue SystemExit, Interrupt
-  down if FileUtils.which('tor')
+  down if tor_installed?
 end
 
 main
