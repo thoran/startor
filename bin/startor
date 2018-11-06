@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20161228
-# 0.1.0
+# 20170911
+# 0.2.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -56,7 +56,7 @@ def enable_proxy
 end
 
 def start_tor
-  run('tor', show: true)
+  exec('tor')
 end
 
 def disable_proxy
@@ -68,12 +68,24 @@ def disable_proxy
   end
 end
 
-def main
+def up
   check_for_tor_program
   enter_admin_password
   setup_interfaces
   enable_proxy
   start_tor
+end
+
+def down
+  disable_proxy
+end
+
+def main
+  case ARGV[0]
+  when 'up'; up
+  when 'down'; down
+  else; up
+  end
 rescue SystemExit, Interrupt
   disable_proxy
 end
