@@ -1,14 +1,19 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20181101
-# 0.5.2
+# 20181106
+# 0.6.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
 # Prerequisites:
 # 1. tor binary is installed.
 # 2. Ruby is installed, which it should be already!
+
+# Installation:
+# 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
+# 2. Type: "Terminal.app" and press the <return> key.
+# 3. Type: "gem install startor"
 
 # How to use:
 # 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
@@ -24,27 +29,17 @@
 # 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
 
 # Todo: (one or more of the following, in no particular order)
-# 1. Turn this into a gem.
+# 1. Turn this into a gem.  Done as of 0.6.0.
 # 2. Turn this into a brew formula.
-# 3. Remove some of the comments here and put those into a README.
+# 3. Remove some of the comments here and put those into a README or INSTALL or other files as appropriate.
 # 4. Create a(n) .app out of this by using some simple wrapper code.
-# 5. Make it cross-platform: OSX, Linux, and Windows.
+# 5. Make it cross-platform: OSX, Linux, and Windows, at least.
+# 6. Clean up the required libraries so that they are either gemified and/or reduced in number.
 
 # Changes:
-# An attempt to make this easy to use.
-# 1. ~ main(), so that it has an additional subcommand: "setup" and so that it doesn't run the down method if tor is found to not be installed.
-# 2. + install_homebrew()
-# 3. + install_tor()
-# 4. + setup()
-# 5. ~ check_for_tor_program(), so that it outputs additional instructions on how to install tor via the setup subcommand.
-# 0/1
-# 6. + tor_installed?()
-# 7. ~ check_for_tor_program() to make use of tor_installed?().
-# 8. ~ main() to make use of tor_installed?().
-# 1/2
-# 9. ~ install_tor(), so that it actually checks for the presence of tor and not copy-pasta brew!
-# 10. Removed the section of comments entitled "Suggested method for installation of prerequisites", since that is captured within setup() and friends.
-# 11. Added to the section of comments entitled "How to use", to include needing to enter one's password, use of `startor setup`, and <ctrl> and <c> for quitting tor.
+# Gemification and further tidying...
+# 1. + startor.gemspec
+# 2. Added to the section of comments entitled "Installation", which includes making use of the startor gem.
 
 require 'FileUtils/which'
 require 'Kernel/run'
