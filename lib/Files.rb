@@ -1,8 +1,8 @@
 # Files.rb
 # Files
 
-# 20140508
-# 0.8.3
+# 20181112
+# 0.8.7
 
 # Changes since 0.7: (Switched from using Files to OpenStructs for @files instance variable because Ruby can't open more than some hundreds of files and nil was being returned after that limit had been reached.)
 # 1. - Files.files_for().
@@ -36,15 +36,25 @@
 # 26. ~ Files#sort_method_macro, #sorter_macro, and #reverse_sort_method_macro, so as to make use of instance_eval rather than eval.
 # 27. Added Kernel/require_relative.rb back, since I should be able to run the specs with MacRuby as well.
 # 28. Updated the gemspec with latest version number.
+# 3/4
+# 29. /return_ostruct_object/return_files_object/.
+# 30. Updated the tests to pass again.  Not sure what has caused the re-ordering.  Has Ruby changed the way it handles files somehow?  Would like to not have to sort the results prior to comparison and have it be exact at some point...
+# 4/5
+# 31. Switched from using the assertion style of testing to the spec style of testing, except for assert File.exist? and assert ... include_all_patterns?, because there is no satisfactory alternative (insofar as readability is concerned) in the spec world.
+# 5/6
+# 32. Using Thoran namespaced extensions to the standard library and updated those to the lastest versions.
+# 6/7
+# 33. Reintroduced a change made in the earlier version 0.8.4: "~ Files.gsub!, so as it calls the instance version for easier debugging."
 
 # Todo:
 # 1. Ensure that the interface is sufficiently usable that it will be reading for a 1.0 release after some more tinkering through the remainder of 0.8 and 0.9.
+# 2. Remove the need for sorting in the tests, which is due to ordering differences which were introduced at some point.
 
 $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__))) unless
   $LOAD_PATH.include?(File.dirname(__FILE__)) || $LOAD_PATH.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'Array/extract_optionsX'
-require 'File/self.gsubX'
+require 'File/gsubX'
 require 'fileutils'
 require 'Module/alias_methods'
 require 'ostruct'
@@ -54,23 +64,23 @@ class Files
   class << self
 
     def find(options = {})
-      path, pattern, return_ostruct_object = options[:path], options[:pattern], options[:return_ostruct_object]
+      path, pattern, return_files_object = options[:path], options[:pattern], options[:return_files_object]
       case
       when path && pattern
-        in_path___with_pattern___(path, pattern, return_ostruct_object)
+        in_path___with_pattern___(path, pattern, return_files_object)
       when path && !pattern
-        in_path___(path, return_ostruct_object)
+        in_path___(path, return_files_object)
       when !path && pattern
-        with_pattern___(pattern, return_ostruct_object)
+        with_pattern___(pattern, return_files_object)
       when !path && !pattern
-        here(return_ostruct_object)
+        here(return_files_object)
       end
     end
     alias_methods :all, :find
 
-    def in_path___with_pattern___(path, pattern, return_ostruct_object = true)
+    def in_path___with_pattern___(path, pattern, return_files_object = true)
       files = with_attributes(Dir["#{path}/#{pattern}"])
-      if return_ostruct_object
+      if return_files_object
         files_object = Files.new
         files_object.files = files
         files_object
@@ -81,18 +91,18 @@ class Files
     alias_methods :in_path_matching, :in_path___matching___,
       :in_path_with_pattern, :in_path___with_pattern___
 
-    def in_path___(path, return_ostruct_object = true)
-      in_path___matching___(path, '*', return_ostruct_object)
+    def in_path___(path, return_files_object = true)
+      in_path___matching___(path, '*', return_files_object)
     end
     alias_methods :in, :in_path, :in_path___
 
-    def with_pattern___(pattern, return_ostruct_object = true)
-      in_path___matching___('./', pattern, return_ostruct_object)
+    def with_pattern___(pattern, return_files_object = true)
+      in_path___matching___('./', pattern, return_files_object)
     end
     alias_methods :with_pattern, :with_pattern___
 
-    def here(return_ostruct_object = true)
-      in_path___matching___('./', '*', return_ostruct_object)
+    def here(return_files_object = true)
+      in_path___matching___('./', '*', return_files_object)
     end
 
     def with_attributes(paths)
@@ -116,7 +126,9 @@ class Files
 
     def gsub!(filenames, replacement_pattern, replacement_text, selection_pattern = nil)
       filenames.each do |filename|
-        File.gsub!(filename, replacement_pattern, replacement_text, selection_pattern)
+        File.open(filename, 'r+') do |f|
+          f.gsub!(replacement_pattern, replacement_text, selection_pattern)
+        end
       end
     end
 
@@ -147,11 +159,11 @@ class Files
       if !@args.empty?
         Files.with_attributes(@args.flatten)
       elsif path && pattern
-        Files.find(path: path, pattern: pattern, return_ostruct_object: false)
+        Files.find(path: path, pattern: pattern, return_files_object: false)
       elsif path
-        Files.find(path: path, return_ostruct_object: false)
+        Files.find(path: path, return_files_object: false)
       elsif pattern
-        Files.find(pattern: pattern, return_ostruct_object: false)
+        Files.find(pattern: pattern, return_files_object: false)
       else
         []
       end

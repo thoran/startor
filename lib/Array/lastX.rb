@@ -1,10 +1,7 @@
+# Array/lastX.rb
 # Array#last!
-# 20060630
-#
-# Description: Sometimes it makes more sense to treat arrays this way.  
-#
-# Discussion: This and first! were taken from Skink2Quick from a few months ago.  
 
-class Array
-  alias_method :last!, :pop
-end
+# 20180804
+# 0.2.3 (The same version number as the current version of Thoran/Array/LastX.)
+
+require 'Thoran/Array/LastX/lastX'

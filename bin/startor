@@ -1,14 +1,12 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20181107
-# 0.6.2
+# 20190802
+# 0.6.3
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
-# Prerequisites:
-# 1. tor binary is installed.
-# 2. Ruby is installed, which it should be already!
+# Prerequisite: Ruby is installed, which it should be already!
 
 # Installation:
 # 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
@@ -21,7 +19,7 @@
 # 3. Type: "startor setup" and press the <return> key.
 # 4. Type: "startor" and press the <return> key.
 # 5. If prompted, enter the password you use to login to your computer.
-# 6. When wanting stop tor, go to the same window as the commands immediately above were entered and press the <ctrl> and <c> keys on the keyboard simultaneously.
+# 6. When wanting to stop tor, go to the same window as the commands immediately above were entered and press the <ctrl> and <c> keys on the keyboard simultaneously.
 # 7. If prompted, enter the password you use to login to your computer.
 
 # Notes:
