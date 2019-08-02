@@ -1,16 +1,7 @@
+# Module/alias_methods.rb
 # Module#alias_methods
 
-# 20080831
-# 0.0.0
+# 20190802
+# 0.1.0 (The same version number as the current version of Thoran/Module/AliasMethods.)
 
-# Description: I have a penchance for having multiple method names and having line after line of alias_method calls is kinda ugly.  
-
-require 'Array/all_but_last'
-
-class Module
-  
-  def alias_methods(*args)
-    args.all_but_last.each{|e| alias_method e.to_sym, args.last.to_sym}
-  end
-  
-end
+require 'Thoran/Module/AliasMethods/alias_methods'
