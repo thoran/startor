@@ -2,7 +2,7 @@
 # startor
 
 # 20190802
-# 0.6.3
+# 0.6.4
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 
@@ -52,11 +52,13 @@
 # 11. ~ install_homebrew() to make use of homebrew_installed?().
 # 12. ~ install_tor() to make use of tor_installed?(), though this is a bit redundant, since setup() should control whether install_tor() is run anyway.
 # 13. ~ setup(), so that it doesn't needlessly install brew, because tor is already installed.
+# 3/4
+# 14. /lib\/OSX/lib\/MacOS/
 
 require 'FileUtils/which'
 require 'Kernel/run'
-require 'OSX/HardwarePort'
-require 'OSX/IfConfig'
+require 'MacOS/HardwarePort'
+require 'MacOS/IfConfig'
 
 def install_homebrew
   if homebrew_installed?
@@ -102,12 +104,12 @@ def enter_admin_password
 end
 
 def active_network_interfaces
-  OSX::IfConfig.new.active_interfaces
+  MacOS::IfConfig.active_interfaces
 end
 
 def active_network_ports
   active_network_interfaces.collect do |active_network_interface|
-    if hardware_port = OSX::HardwarePort.find_by_device(active_network_interface)
+    if hardware_port = MacOS::HardwarePort.find_by_device(active_network_interface)
       hardware_port.name
     end
   end.compact
