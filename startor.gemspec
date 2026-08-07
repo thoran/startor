@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.name = 'startor'
-  spec.version = '0.6.4'
-  spec.date = '2020-12-30'
+  spec.version = '0.7.0'
+  spec.date = '2026-08-08'
 
   spec.summary = "tor management made easy."
   spec.description = "Easily install, start, and stop tor."
