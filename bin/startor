@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20260807
-# 0.7.0
+# 20260819
+# 0.8.0
 
 # History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
 

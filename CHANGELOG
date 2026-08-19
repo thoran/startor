@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 20260819
+
+0.8.0: Vendor the four library files which were resolving from RUBYLIB rather than from the repository, and bring the gemspec up to date.
+
+1. + lib/File/gsubX.rb
+2. + lib/Regexp/to_regexp.rb
+3. + lib/String/to_regexp.rb
+4. + lib/Thoran/File/GsubX/gsubX.rb
+5. + lib/Startor/VERSION.rb
+6. ~ startor.gemspec: + ostruct, which lib/Files.rb requires and which Ruby 4.0 dropped from the default gems. It had declared no dependency at all, so ostruct resolved only where a gem home happened to hold one.
+7. ~ startor.gemspec: spec.version from Startor::VERSION, in place of a literal which had read 0.6.4 since 2020.
+8. ~ startor.gemspec: - spec.date, which was pinned to 2020-12-30, letting RubyGems' default stand.
+9. ~ startor.gemspec: - spec.has_rdoc, which RubyGems removed some years ago.
+10. ~ startor.gemspec: required_ruby_version: /1.8.6/2.7.0/
+11. ~ startor.gemspec: + spec.require_paths, + CHANGELOG to the file list, and spec.files as an array with a Dir[] around each glob.
+
+
 ## 20260807
 
 0.7.0: Add a CHANGELOG in the form changelogger writes, and retire the Changes section from the script header.
