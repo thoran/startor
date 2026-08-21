@@ -2,6 +2,15 @@
 
 ## 20260821
 
+0.9.2: Mark Todo 2 done, the formula having existed since 0.6.3.
+
+1. ~ Todo 2, "Turn this into a brew formula", marked in the form Todos 1 and 3 already use.
+2. The version comes from homebrew-tap's own history rather than from memory: the commit which added startor.rb, on 2020-04-08, pinned version '0.6.3'.
+3. It had stood open six years, which is what an unmarked Todo does. Todo 1 was marked at 0.6.0 and Todo 3 yesterday at 0.9.0, so this was the last of the three which had been done and not said so.
+
+
+## 20260821
+
 0.9.1: Fetch Homebrew's installer from where it now lives, and run it with bash rather than ruby.
 
 1. ~ install_homebrew(): /usr/bin/ruby -e --> /bin/bash -c, and .../install/master/install --> .../install/HEAD/install.sh. The old URL answers 404, so curl -fsSL fetched nothing, ruby ran an empty program, and the `brew install tor` after it failed for want of brew. Homebrew's installer has been a bash script for years; the line dated from when it was ruby.
