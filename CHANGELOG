@@ -2,6 +2,15 @@
 
 ## 20260821
 
+0.10.1: + LICENSE, and the README section naming it.
+
+1. + LICENSE: the MIT text, copyright 2016-2026 thoran. The year is that of the first commit.
+2. + README.md: a License section, saying MIT, last as the four repositories here which already had one have it.
+3. ~ bin/startor: /0.10.0/0.10.1/, and the date.
+
+
+## 20260821
+
 0.10.0: Update the four vendored libraries which had drifted, and drop the twenty-eight files nothing reaches, which is Todo 6.
 
 1. ~ lib/FileUtils/where.rb: 0.0.2 --> 0.1.0; lib/Kernel/run.rb: 0.1.5 --> 0.3.0; lib/MacOS/IfConfig.rb: 0.6.0 --> 0.7.0; lib/Thoran/String/Capture/capture.rb: 0.3.0 --> 0.3.1. Taken from ~/lib/ruby by vendor_requires --overwrite, the repository copy being the older in each case.
