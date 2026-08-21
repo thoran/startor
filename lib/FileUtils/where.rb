@@ -1,31 +1,23 @@
 # FileUtils/where.rb
 # FileUtils#where
 
-# 20140912
-# 0.0.2
-
-# History: Derived from where 0.2.3---the original command version I wrote in Ruby.
+# 20260609
+# 0.1.0
 
 # Changes:
-# 1. Removed trailing spaces.
-# 2. - require 'File/extension', since it doesn't seem to be being used.
-# 3. /require 'File/basename_without_extension'/require 'File/basename_without_extname'/, and uses thereof.
-# 4. /require 'Platform/windowsQ'/require 'Platform/OS', and use thereof.
-
-require 'File/basename_without_extname'
-require 'Platform/OS'
+# -/0: Simplify dependencies, especially platform detection.
+# 1. - require 'Platform/OS'
+# 2. - require 'File/self.basename_without_extname'
+# 3. Instead of checking for basename_without_extname if on Windows, instead check for both with and without the extension in a single conditional branch.
 
 module FileUtils
-
   def where(executable_sought)
-    paths = ENV['PATH'].split(/:/)
     sought_paths = []
-    paths.uniq.each do |path|
+    ENV['PATH'].split(File::PATH_SEPARATOR).uniq.each do |path|
       Dir["#{path}/*"].each do |executable|
-        if Platform::OS.windows?
-          sought_paths << executable if File.basename_without_extname(executable) == File.basename_without_extname(executable_sought)
-        else
-          sought_paths << executable if File.basename(executable) == executable_sought
+        basename = File.basename(executable)
+        if basename == executable_sought || File.basename(executable, '.*') == executable_sought
+          sought_paths << executable
         end
       end
     end
@@ -33,5 +25,4 @@ module FileUtils
   end
 
   module_function :where
-
 end

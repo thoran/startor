@@ -2,6 +2,19 @@
 
 ## 20260821
 
+0.10.0: Update the four vendored libraries which had drifted, and drop the twenty-eight files nothing reaches, which is Todo 6.
+
+1. ~ lib/FileUtils/where.rb: 0.0.2 --> 0.1.0; lib/Kernel/run.rb: 0.1.5 --> 0.3.0; lib/MacOS/IfConfig.rb: 0.6.0 --> 0.7.0; lib/Thoran/String/Capture/capture.rb: 0.3.0 --> 0.3.1. Taken from ~/lib/ruby by vendor_requires --overwrite, the repository copy being the older in each case.
+2. The IfConfig copy was not merely old but broken here. 0.6.0 raises NoMethodError parsing a point-to-point inet line, "undefined method 'split' for nil", which awdl0 and a live utun both produce. active_interfaces() is the first thing setup_interfaces() calls, so startor, startor up and startor down all died there, after asking for the sudo password. 0.7.0 parses it.
+3. - Twenty-eight files from lib, nothing reaching them once the four were updated: where.rb no longer requires Platform/OS or File/basename_without_extname, and run.rb no longer requires Array/extract_optionsX, so Files.rb, Ordinal, Version.rb, the Platform tree and the String and Array extensions behind them all fall away with them. Thirty-eight files to ten.
+4. Todo 6 marked done as of this version, reduced rather than gemified, which its "and/or" allows.
+5. Checked rather than assumed: audit_requires reports nothing missing against the ten, and each call the script makes was run against the trimmed lib — active_interfaces, HardwarePort.find_by_device, FileUtils.which and run() with show:.
+6. lib/Startor/VERSION.rb is kept though nothing requires it, the gemspec reading the version from there. The gemspec's files list globs lib/**/*.rb, so the removals need nothing of it.
+7. run()'s dont_raise: became raise_on_failure: between 0.1.5 and 0.3.0. This passes neither, so nothing here turns on it.
+
+
+## 20260821
+
 0.9.2: Mark Todo 2 done, the formula having existed since 0.6.3.
 
 1. ~ Todo 2, "Turn this into a brew formula", marked in the form Todos 1 and 3 already use.

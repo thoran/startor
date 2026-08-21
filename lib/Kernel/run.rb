@@ -1,42 +1,41 @@
 # Kernel/run.rb
 # Kernel#run
 
-# 20170613
-# 0.1.5
+# 20260301
+# 0.3.0
 
-# Changes:
-# 1. Make use of a number of options, substituting ENV['DRY_RUN'] for options[:dry_run], and adding :show and :dont_raise.
-# 0/1
-# 2. When showing the output make it clear that it is a dry run.
-# 1/2
-# 3. If the :dry_run option is specified, then it makes no sense to test $? for success, so group all that code in the unless.
-# 2/3
-# 4. The logic was reversed for whether to raise or not.
-# 3/4
-# 5. Really fixed the raise logic finally, I think.
-# 4/5
-# 6. Yet another attempt at fixing the raise logic.
-
-# Todo:
-# 1. Even though this is a small method it might be good idea to add some automated tests.
-
-require 'Array/extract_optionsX'
+# Changes since 0.2:
+# -/0: + Allow capture of output from issued command.
+# 1. + capture: keyword argument to return command output instead of success boolean.
+# 2. Check for capture being true and issue wtih backticks instead of using system().
 
 module Kernel
 
-  def run(*args)
-    options = args.extract_options!
-    command = args
-    if options[:show] && !options[:dry_run]
-      puts command.join(' ')
-    elsif options[:show] && options[:dry_run]
-      puts "DRY RUN *** #{command.join(' ')} *** DRY RUN"
-    end
-    unless options[:dry_run]
-      system(*command)
-      if !$?.success? && !options[:dont_raise]
-        raise "#{command.inspect} failed to exit cleanly."
+  def run(*command, capture: false, dry_run: false, show: false, raise_on_failure: true)
+    if show
+      if dry_run
+        puts "DRY RUN *** #{command.join(' ')} *** DRY RUN"
+      else
+        puts command.join(' ')
       end
+    end
+    unless dry_run
+      if capture
+        output = `#{command.join(' ')}`.strip
+        if !$?.success? && raise_on_failure
+          raise "#{command.inspect} failed with exit code #{$?.exitstatus}."
+        end
+        output # Return the output of issuing the command.
+      else
+        system(*command)
+        success = $?.success?
+        if !success && raise_on_failure
+          raise "#{command.inspect} failed with exit code #{$?.exitstatus}."
+        end
+        success # Return the success or failure of issuing the command.
+      end
+    else # Dry runs always succeed.
+      true
     end
   end
 
