@@ -2,7 +2,7 @@
 # startor
 
 # 20260821
-# 0.9.0
+# 0.9.1
 
 # Todo: (one or more of the following, in no particular order)
 # 1. Turn this into a gem.  Done as of 0.6.0.
@@ -21,7 +21,7 @@ def install_homebrew
   if homebrew_installed?
     puts 'Homebrew is already installed!'
   else
-    run('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', show: true)
+    run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', show: true)
   end
 end
 

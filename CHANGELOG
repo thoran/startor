@@ -2,6 +2,16 @@
 
 ## 20260821
 
+0.9.1: Fetch Homebrew's installer from where it now lives, and run it with bash rather than ruby.
+
+1. ~ install_homebrew(): /usr/bin/ruby -e --> /bin/bash -c, and .../install/master/install --> .../install/HEAD/install.sh. The old URL answers 404, so curl -fsSL fetched nothing, ruby ran an empty program, and the `brew install tor` after it failed for want of brew. Homebrew's installer has been a bash script for years; the line dated from when it was ruby.
+2. It went unnoticed because install_homebrew() skips where brew is present, which it has been on every machine this has run on. The half which is broken is the half only a bare machine reaches.
+3. The form is the one homebrew-tap's own README gives, which is Homebrew's published line.
+4. ~ README.md: Note 6 said the Homebrew half did not work, which was written yesterday and is now wrong.
+
+
+## 20260821
+
 0.9.0: + README.md, including what was in the header.
 
 1. + README.md. Description, Installation, Usage, Notes and Contributing, following the shape of the READMEs the other programs in the tap carry.
