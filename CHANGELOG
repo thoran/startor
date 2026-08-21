@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 20260821
+
+0.9.0: + README.md, including what was in the header.
+
+1. + README.md. Description, Installation, Usage, Notes and Contributing, following the shape of the READMEs the other programs in the tap carry.
+2. - The Installation, How to use, Prerequisite and Notes sections from the script header, their record being the README's now, and keeping both invites them to disagree. This is Todo 3, marked done as of this version.
+3. The Installation section the header carried said `gem install startor`, which is not how this is installed: the formula clones the repository and vendors what it needs. The README gives the brew commands instead, and says that lib has to be on the load path where the install is by any other means.
+4. What the two ways up do differently is written down: `startor up` execs tor and so leaves nothing to take the proxy back down, while plain `startor` runs it as a child and does.
+5. ~ lib/Startor/VERSION.rb: 0.8.0 --> 0.9.0, the gemspec reading the version from there.
+6. - The History line from the script header too. The README's Description ends with that derivation, linked, so the header need not carry it as well.
+7. + sudo -v asks for a password even where /usr/sbin/networksetup carries a NOPASSWD entry, since it validates against the whole of a user's entries rather than one command. Anyone meaning to run this unattended needs to know that before wondering why it stops.
+8. + setup()'s Homebrew half is broken: it fetches https://raw.githubusercontent.com/Homebrew/install/master/install, which answers 404, so an empty program is run and the brew install tor after it fails for want of brew. It has gone unnoticed because every machine this has run on already had Homebrew, which install_homebrew() checks for and skips. mercurial's setup() fetches the same dead URL. Recorded, not fixed.
+
+
 ## 20260819
 
 0.8.0: Vendor the four library files which were resolving from RUBYLIB rather than from the repository, and bring the gemspec up to date.

@@ -1,35 +1,13 @@
 #!/usr/bin/env ruby
 # startor
 
-# 20260819
-# 0.8.0
-
-# History: Derived from https://kremalicious.com/simple-tor-setup-on-mac-os-x/...
-
-# Prerequisite: Ruby is installed, which it should be already!
-
-# Installation:
-# 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
-# 2. Type: "Terminal.app" and press the <return> key.
-# 3. Type: "gem install startor"
-
-# How to use:
-# 1. Press the <cmd> and <space> keys on the keyboard simultaneously.
-# 2. Type: "Terminal.app" and press the <return> key.
-# 3. Type: "startor setup" and press the <return> key.
-# 4. Type: "startor" and press the <return> key.
-# 5. If prompted, enter the password you use to login to your computer.
-# 6. When wanting to stop tor, go to the same window as the commands immediately above were entered and press the <ctrl> and <c> keys on the keyboard simultaneously.
-# 7. If prompted, enter the password you use to login to your computer.
-
-# Notes:
-# 1. The hardware ports can be any of: 'Thunderbolt Ethernet', 'Thunderbolt Bridge', 'Wi-Fi', 'Ethernet', 'Bluetooth PAN', or 'Display Ethernet'.
-# 2. See `networksetup -listallnetworkservices` for the complete list of hardware ports on your machine.
+# 20260821
+# 0.9.0
 
 # Todo: (one or more of the following, in no particular order)
 # 1. Turn this into a gem.  Done as of 0.6.0.
 # 2. Turn this into a brew formula.
-# 3. Remove some of the comments here and put those into a README or INSTALL or other files as appropriate.
+# 3. Remove some of the comments here and put those into a README or INSTALL or other files as appropriate.  Done as of 0.9.0.
 # 4. Create a(n) .app out of this by using some simple wrapper code.
 # 5. Make it cross-platform: OSX, Linux, and Windows, at least.
 # 6. Clean up the required libraries so that they are either gemified and/or reduced in number.
